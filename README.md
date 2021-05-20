@@ -1,2 +1,3 @@
-# backend_rest_api_python
-Backend rest api python repository (Django)
+# BACKEND REST APIs with python
+
+Code for course for developing APIs in python
