@@ -7,9 +7,9 @@ from rest_framework.response import Response
 
 # List of handy http status codes to return
 from rest_framework import status
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
 
-from profiles_api import serializers
+from profiles_api import serializers, models
 
 """
 
@@ -154,3 +154,9 @@ class HelloViewSet(ViewSet):
 			"http_method": "DELETE"
 		}
 		return Response(response)
+
+
+class UserProfileViewSet(ModelViewSet):
+	""" Handle Creating and Updating Profiles """
+	serializer_class = serializers.UserProfileSerializer
+	queryset = models.UserProfile.objects.all()
