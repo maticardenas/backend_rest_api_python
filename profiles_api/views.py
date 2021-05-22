@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 # List of handy http status codes to return
 from rest_framework import status
+from rest_framework.viewsets import ViewSet
 
 from profiles_api import serializers
 
@@ -17,8 +18,16 @@ from profiles_api import serializers
 """
 
 # As class based view.
-class HelloApiView(APIView):
-	""" Testing my first APIView"""
+
+class HelloAPIView(APIView):
+	"""
+	Testing my first APIView
+
+	APIViews are mostly used when:
+	* We need full customization and control in our API logic
+	* Processing files and provifing synchronous response
+
+	"""
 	serializer_class = serializers.HelloSerializer
 
 	def get(self, request: HttpRequest, format=None) -> HttpResponse:
@@ -76,3 +85,72 @@ class HelloApiView(APIView):
 		return Response(response)
 
 
+class HelloViewSet(ViewSet):
+	"""
+	View Sets provide already logic for basic HTTP operations
+
+	Useful when we need to build basic database APIs in our application
+	"""
+
+	serializer_class = serializers.HelloSerializer
+
+	def list(self, request: HttpRequest) -> HttpResponse:
+		""" Returns a hello message """
+
+		a_viewset = [
+			"Uses actions (list, create, retrieve, update, partial_update)",
+			"Automatically maps to URLs using Routers",
+			"Provides more functionality with less code"
+		]
+
+		response = {
+			"message": "Hello!",
+			"a_viewset": a_viewset
+		}
+
+		return Response(response)
+
+	def create(self, request: HttpRequest) -> HttpResponse:
+		"""Create a new hello message."""
+		serializer = self.serializer_class(data=request.data)
+
+		if serializer.is_valid():
+			name = serializer.validated_data.get("name")
+			message = f"Hello {name}!"
+			response = {
+				"message": message
+			}
+			return Response({"message": message})
+		else:
+			return Response(
+				serializer.errors,
+				status=status.HTTP_400_BAD_REQUEST
+			)
+
+	def retrieve(self, request: HttpRequest, pk: Optional["Any"] = None) -> HttpResponse:
+		"""Handle getting an object by its ID"""
+		response = {
+			"http_method": "GET"
+		}
+		return Response(response)
+
+	def update(self, request: HttpRequest, pk: Optional["Any"] = None) -> HttpResponse:
+		"""Handle updating an object"""
+		response = {
+			"http_method": "PUT"
+		}
+		return Response(response)
+
+	def partial_update(self, request: HttpRequest, pk: Optional["Any"] = None) -> HttpResponse:
+		"""Handle updating part of an object"""
+		response = {
+			"http_method": "PATCH"
+		}
+		return Response(response)
+
+	def destroy(self, request: HttpRequest, pk: Optional["Any"] = None) -> HttpResponse:
+		"""Handle removing an object"""
+		response = {
+			"http_method": "DELETE"
+		}
+		return Response(response)
