@@ -8,6 +8,7 @@ class HelloSerializer(serializers.Serializer):
 	""" Serializes a name field for testing my first APIView"""
 	name = serializers.CharField(max_length=10)
 
+
 class UserProfileSerializer(serializers.ModelSerializer):
 	"""
 		Serializes a UserProfile object.
@@ -45,3 +46,18 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 		return super().update(instance, validated_data)
 
+
+class ProfileFeedItemSerializer(serializers.ModelSerializer):
+	""" Serializes Profile Feed items """
+	class Meta:
+		model = models.ProfileFeedItem
+		fields = ("id", "user_profile", "status_text", "created_on")
+
+		#We want the user_profile to be assigned only to the current authenticated user
+	    # therefore we make read-only
+
+		extra_kwargs = {
+			"user_profile": {
+				"read_only": True
+			}
+		}

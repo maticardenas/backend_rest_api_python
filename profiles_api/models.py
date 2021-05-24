@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.models import BaseUserManager
+from django.conf import settings
 
 if TYPE_CHECKING:
     from django.contrib.auth.models import User
@@ -66,3 +67,18 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """Return string representation of user"""
         return self.email
+
+
+class ProfileFeedItem(models.Model):
+    """ Profile status update """
+    # This way we ensure if we change our authorization user model, there won't be need of updating here the reference
+    user_profile = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    status_text = models.CharField(max_length=255)
+    # Automatically we set to the current date
+    created_on = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.status_text
