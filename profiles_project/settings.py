@@ -23,7 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'vrqnxb(+g09j_$9^01v%urrxoszx!8@h@4c1#t6%!vv!6viy)o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# We attempt to retrieve here the environmental variable we have set in our supervisor_profiles_api.conf file
+# int cast is necessary because by default environment variables are string
+DEBUG = bool(int(os.environ.get("DEBUG", 1)))
 
 ALLOWED_HOSTS = []
 
@@ -124,3 +126,5 @@ STATIC_URL = '/static/'
 
 # Custom user model
 AUTH_USER_MODEL = "profiles_api.UserProfile"
+
+STATIC_ROOT = "static/"
