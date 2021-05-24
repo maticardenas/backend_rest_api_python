@@ -7,6 +7,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import filters
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.settings import api_settings
+from rest_framework.permissions import IsAuthenticated
 
 # List of handy http status codes to return
 from rest_framework import status
@@ -179,6 +180,11 @@ class UserProfileFeedViewSet(ModelViewSet):
 	serializer_class =  serializers.ProfileFeedItemSerializer
 	queryset =  models.ProfileFeedItem.objects.all()
 	authentication_classes = (TokenAuthentication,)
+	permission_classes = (
+		permissions.UpdateOwnStatus,
+		#IsAuthenticatedOrReadOnly -> Lets to ONLY read the API list
+		IsAuthenticated, # Won't give access to the API to non-authenticated users
+	)
 
 	def perform_create(self, serializer: serializers.ProfileFeedItemSerializer):
 		""" Sets the user profile to the logged in user """
